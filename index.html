@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gujarat Studies Quiz</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Full Page Background and Centering */
+        html, body {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient Background */
+            color: white;
+        }
+
+        /* Main Container */
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        /* Question Styling */
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        /* Options Styling */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option label {
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745; /* Green color */
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        /* Next Question Button */
+        .next-btn {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF; /* Blue color */
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none; /* Initially hidden */
+        }
+
+        .next-btn:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* Result Display */
+        .result {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        /* Correct and Incorrect Styling */
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="question" id="question">Question 1: What is the capital of Gujarat?</div>
+        <div class="options" id="options">
+            <div class="option">
+                <input type="radio" name="answer" id="optionA" value="A">
+                <label for="optionA">A. Gandhinagar</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="answer" id="optionB" value="B">
+                <label for="optionB">B. Ahmedabad</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="answer" id="optionC" value="C">
+                <label for="optionC">C. Surat</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="answer" id="optionD" value="D">
+                <label for="optionD">D. Vadodara</label>
+            </div>
+        </div>
+        <button class="submit-btn" onclick="submitAnswer()">Submit</button>
+        <button class="next-btn" onclick="nextQuestion()">Next Question</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Question 1: What is the capital of Gujarat?",
+                options: ["A. Gandhinagar", "B. Ahmedabad", "C. Surat", "D. Vadodara"],
+                correctAnswer: "A"
+            },
+            {
+                question: "Question 2: Which is the largest city in Gujarat?",
+                options: ["A. Gandhinagar", "B. Ahmedabad", "C. Surat", "D. Vadodara"],
+                correctAnswer: "B"
+            },
+            // Add more questions here
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+
+        // Function to load the current question
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('question').textContent = question.question;
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.innerHTML = `
+                    <input type="radio" name="answer" id="option${String.fromCharCode(65 + index)}" value="${String.fromCharCode(65 + index)}">
+                    <label for="option${String.fromCharCode(65 + index)}">${option}</label>
+                `;
+                optionsDiv.appendChild(optionDiv);
+            });
+            document.getElementById('result').textContent = '';
+            document.querySelector('.next-btn').style.display = 'none'; // Hide Next Question button
+            document.querySelector('.submit-btn').style.display = 'block'; // Show Submit button
+        }
+
+        // Function to submit the answer
+        function submitAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (!selectedOption) {
+                alert('Please select an option!');
+                return;
+            }
+
+            const correctAnswer = questions[currentQuestionIndex].correctAnswer;
+            const resultDiv = document.getElementById('result');
+
+            if (selectedOption.value === correctAnswer) {
+                resultDiv.textContent = 'Correct!';
+                resultDiv.className = 'result correct';
+            } else {
+                resultDiv.textContent = `Incorrect! Correct answer is ${correctAnswer}`;
+                resultDiv.className = 'result incorrect';
+            }
+
+            // Highlight correct and incorrect answers
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                const input = option.querySelector('input');
+                const label = option.querySelector('label');
+                if (input.value === correctAnswer) {
+                    label.classList.add('correct');
+                } else if (input.value === selectedOption.value) {
+                    label.classList.add('incorrect');
+                }
+            });
+
+            // Show Next Question button
+            document.querySelector('.next-btn').style.display = 'block';
+            document.querySelector('.submit-btn').style.display = 'none';
+        }
+
+        // Function to load the next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Function to show final results
+        function showResults() {
+            let resultHTML = '<h2>Results:</h2>';
+            userAnswers.forEach((answer, index) => {
+                resultHTML += `
+                    <div>
+                        <p><strong>Question ${index + 1}:</strong> ${answer.question}</p>
+                        <p><strong>Your Answer:</strong> ${answer.userAnswer}</p>
+                        <p><strong>Correct Answer:</strong> ${answer.correctAnswer}</p>
+                    </div>
+                `;
+            });
+            document.getElementById('result').innerHTML = resultHTML;
+        }
+
+        // Load the first question
+        loadQuestion();
+    </script>
+
+</body>
+</html>
